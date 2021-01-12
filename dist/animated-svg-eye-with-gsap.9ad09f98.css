@@ -1,2 +1,18 @@
+svg {
+    height: 50vw;
+    width: 50vw;
+}
+
+div {
+    height: 95vh;
+    width:95vw;
+    margin-left: 2vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid black;
+}
+
+
 
 /*# sourceMappingURL=/animated-svg-eye-with-gsap.9ad09f98.css.map */
