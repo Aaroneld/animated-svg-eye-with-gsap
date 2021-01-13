@@ -5590,6 +5590,10 @@ var _gsap = _interopRequireDefault(require("gsap"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var iris = document.querySelector('#iris-pupil').children[1];
+var container = document.querySelector("#eye-container");
+var pupil = document.querySelector("#pupil");
+var rays = document.querySelectorAll(".rays");
+console.log(rays, pupil);
 var bRect = iris.getBoundingClientRect();
 var center = [bRect.x + bRect.width / 2, bRect.y + bRect.height / 2];
 
@@ -5623,23 +5627,121 @@ function getIntersection(radius, slope, quadrant) {
   }
 }
 
+function idleAnimation() {
+  console.log('here');
+
+  _gsap.default.killTweensOf("#pupil");
+
+  _gsap.default.killTweensOf("#ray2");
+
+  _gsap.default.killTweensOf("#ray3");
+
+  _gsap.default.to("#pupil", {
+    scaleX: 1.25,
+    scaleY: 1.25,
+    transformOrigin: "center",
+    yoyo: true,
+    repeat: 11
+  });
+
+  _gsap.default.to("#ray2", {
+    rotate: 360,
+    duration: 40,
+    direction: "right",
+    repeat: 11,
+    transformOrigin: "center",
+    yoyo: true,
+    ease: "elastic.out(1, 0.3)"
+  });
+
+  _gsap.default.to("#ray3", {
+    rotate: 360,
+    duration: 20,
+    scaleX: 1.2,
+    direction: "left",
+    repeat: 11,
+    transformOrigin: "center",
+    yoyo: true,
+    ease: "elastic.out(1, 0.3)"
+  }); // gsap.to("#ray2", {rotate: 360, duration: 13, direction: "right", repeat: 2, transformOrigin: "center"})
+
+}
+
 container.addEventListener('mousemove', function (e) {
   var relPos = getRelativePosition(e.clientX, center[0], e.clientY, center[1]);
   var slope = calculateSlope(relPos[0], 0, relPos[1], 0);
   var quadrant = determineQuadrant(relPos[0], relPos[1]);
   var intersection = getIntersection(bRect.width / 2, slope, quadrant);
 
-  _gsap.default.to("#iris-pupil", {
+  _gsap.default.to("#iris-shadow", {
+    x: intersection[0] * .9,
+    y: intersection[1] * .9,
+    ease: "slow(0.7, 0.7, false)"
+  });
+
+  _gsap.default.to("#reflection-1", {
     x: intersection[0] * .15,
-    y: intersection[1] * .25,
+    y: intersection[1] * .15,
+    ease: "slow(0.7, 0.7, false)"
+  });
+
+  _gsap.default.to("#reflection-2", {
+    x: intersection[0] * .15,
+    y: intersection[1] * .15,
     ease: "slow(0.7, 0.7, false)"
   });
 });
+
+var ray2Anim = _gsap.default.to("#ray2", {
+  rotate: 360,
+  duration: 100,
+  direction: "right",
+  repeat: 11,
+  transformOrigin: "center",
+  yoyo: true,
+  ease: "elastic.out(1, 0.3)"
+}).pause();
+
+var ray3Anim = _gsap.default.to("#ray3", {
+  rotate: 360,
+  duration: 75,
+  scaleX: 1.2,
+  direction: "left",
+  repeat: 11,
+  transformOrigin: "center",
+  yoyo: true,
+  ease: "elastic.out(1, 0.3)"
+}).pause();
+
 container.addEventListener('mouseleave', function (e) {
-  _gsap.default.to("#iris-pupil", {
+  _gsap.default.to("#iris-shadow", {
     x: 0,
-    y: 0
+    y: 0,
+    ease: "bounce.out"
   });
+
+  _gsap.default.to("#reflection-1", {
+    x: 0,
+    y: 0,
+    ease: "bounce.out"
+  });
+
+  _gsap.default.to("#reflection-2", {
+    x: 0,
+    y: 0,
+    ease: "bounce.out"
+  });
+
+  _gsap.default.to("#pupil", {
+    scaleX: Math.random() * (1.2 - .9) + .9,
+    scaleY: Math.random() * (1.2 - .9) + .9,
+    transformOrigin: "center",
+    yoyo: true,
+    repeat: 11
+  });
+
+  ray2Anim.restart();
+  ray3Anim.restart();
 }); // // console.log(e);
 // // console.log("Distance:", calculateDistance(e.clientX, center[0], e.clientY, center[1]) )
 // // console.log("Slope", calculateSlope(e.clientX, center[0], e.clientY, center[1]))
@@ -5696,7 +5798,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52811" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49405" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
