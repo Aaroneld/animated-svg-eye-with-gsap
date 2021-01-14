@@ -5627,55 +5627,45 @@ function getIntersection(radius, slope, quadrant) {
   }
 }
 
-function idleAnimation() {
-  console.log('here');
+var ray2Anim = _gsap.default.to("#ray2", {
+  rotate: 360,
+  duration: 100,
+  direction: "right",
+  repeat: 11,
+  transformOrigin: "center",
+  yoyo: true,
+  ease: "elastic.out(1, 0.3)"
+}).pause();
 
-  _gsap.default.killTweensOf("#pupil");
+var ray3Anim = _gsap.default.to("#ray3", {
+  rotate: 360,
+  duration: 110,
+  scaleX: 1.2,
+  direction: "left",
+  repeat: 11,
+  transformOrigin: "center",
+  yoyo: true,
+  ease: "elastic.out(1, 0.3)"
+}).pause();
 
-  _gsap.default.killTweensOf("#ray2");
-
-  _gsap.default.killTweensOf("#ray3");
-
-  _gsap.default.to("#pupil", {
-    scaleX: 1.25,
-    scaleY: 1.25,
-    transformOrigin: "center",
-    yoyo: true,
-    repeat: 11
-  });
-
-  _gsap.default.to("#ray2", {
-    rotate: 360,
-    duration: 40,
-    direction: "right",
-    repeat: 11,
-    transformOrigin: "center",
-    yoyo: true,
-    ease: "elastic.out(1, 0.3)"
-  });
-
-  _gsap.default.to("#ray3", {
-    rotate: 360,
-    duration: 20,
-    scaleX: 1.2,
-    direction: "left",
-    repeat: 11,
-    transformOrigin: "center",
-    yoyo: true,
-    ease: "elastic.out(1, 0.3)"
-  }); // gsap.to("#ray2", {rotate: 360, duration: 13, direction: "right", repeat: 2, transformOrigin: "center"})
-
-}
+var pupilAnim = _gsap.default.to("#pupil", {
+  scaleX: Math.random() * (1.2 - .9) + .9,
+  scaleY: Math.random() * (1.2 - .9) + .9,
+  transformOrigin: "center",
+  yoyo: true,
+  repeat: 11
+}).pause();
 
 container.addEventListener('mousemove', function (e) {
+  pupilAnim.restart().pause();
   var relPos = getRelativePosition(e.clientX, center[0], e.clientY, center[1]);
   var slope = calculateSlope(relPos[0], 0, relPos[1], 0);
   var quadrant = determineQuadrant(relPos[0], relPos[1]);
   var intersection = getIntersection(bRect.width / 2, slope, quadrant);
 
   _gsap.default.to("#iris-shadow", {
-    x: intersection[0] * .9,
-    y: intersection[1] * .9,
+    x: intersection[0],
+    y: intersection[1] > 0 ? intersection[1] * .7 : intersection[1],
     ease: "slow(0.7, 0.7, false)"
   });
 
@@ -5690,29 +5680,11 @@ container.addEventListener('mousemove', function (e) {
     y: intersection[1] * .15,
     ease: "slow(0.7, 0.7, false)"
   });
+
+  _gsap.default.to("#eye-shadow", {
+    x: intersection[0] * .12
+  });
 });
-
-var ray2Anim = _gsap.default.to("#ray2", {
-  rotate: 360,
-  duration: 100,
-  direction: "right",
-  repeat: 11,
-  transformOrigin: "center",
-  yoyo: true,
-  ease: "elastic.out(1, 0.3)"
-}).pause();
-
-var ray3Anim = _gsap.default.to("#ray3", {
-  rotate: 360,
-  duration: 75,
-  scaleX: 1.2,
-  direction: "left",
-  repeat: 11,
-  transformOrigin: "center",
-  yoyo: true,
-  ease: "elastic.out(1, 0.3)"
-}).pause();
-
 container.addEventListener('mouseleave', function (e) {
   _gsap.default.to("#iris-shadow", {
     x: 0,
@@ -5732,14 +5704,11 @@ container.addEventListener('mouseleave', function (e) {
     ease: "bounce.out"
   });
 
-  _gsap.default.to("#pupil", {
-    scaleX: Math.random() * (1.2 - .9) + .9,
-    scaleY: Math.random() * (1.2 - .9) + .9,
-    transformOrigin: "center",
-    yoyo: true,
-    repeat: 11
+  _gsap.default.to("#eye-shadow", {
+    x: 0
   });
 
+  pupilAnim.restart();
   ray2Anim.restart();
   ray3Anim.restart();
 }); // // console.log(e);
@@ -5798,7 +5767,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49405" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63319" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
