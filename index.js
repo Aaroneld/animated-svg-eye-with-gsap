@@ -5,6 +5,14 @@ const container = document.querySelector("#eye-container");
 
 const bRect = iris.getBoundingClientRect();
 const center = [bRect.x + bRect.width / 2, bRect.y + bRect.height / 2];
+const maxDistance = calculateDistance(
+  bRect.x + bRect.width / 2,
+  0,
+  bRect.y + bRect.height / 2,
+  0
+);
+
+console.log(maxDistance);
 
 const ray2Anim = gsap
   .to("#ray2", {
@@ -67,30 +75,50 @@ function leaveAnimations() {
   lineAnim.restart();
 }
 
-function mouseMoveAnimations(intersection) {
+function calculateTranslationAmount(
+  proportionalComponent,
+  proportionFactor = 1,
+  distanceFactor,
+  distanceComponent
+) {
+  const SIGNEDNESS = proportionalComponent / Math.abs(proportionalComponent);
+  return (
+    proportionalComponent * proportionFactor +
+    distanceFactor * distanceComponent * SIGNEDNESS
+  );
+}
+
+function mouseMoveAnimations(intersection, distancePercent) {
   gsap.to("#iris-shadow", {
-    x: intersection[0],
-    y: intersection[1] > 0 ? intersection[1] * 0.7 : intersection[1],
+    x: calculateTranslationAmount(intersection[0], 1, 50, distancePercent),
+    y:
+      intersection[1] > 0
+        ? calculateTranslationAmount(intersection[0], 0.7, 0, 0)
+        : calculateTranslationAmount(intersection[1], 1, 50, distancePercent),
     ease: "slow(0.7, 0.7, false)",
   });
   gsap.to("#reflection-1", {
-    x: intersection[0] * 0.15,
-    y: intersection[1] * 0.15,
+    x: calculateTranslationAmount(intersection[0], 0.15, 7, distancePercent),
+    y: calculateTranslationAmount(intersection[1], 0.15, 7, distancePercent),
     ease: "slow(0.7, 0.7, false)",
   });
   gsap.to("#reflection-2", {
-    x: intersection[0] * 0.15,
-    y: intersection[1] * 0.15,
+    x: calculateTranslationAmount(intersection[0], 0.15, 7, distancePercent),
+    y: calculateTranslationAmount(intersection[1], 0.15, 7, distancePercent),
     ease: "slow(0.7, 0.7, false)",
   });
   gsap.to("#eye-shadow", {
-    x: intersection[0] * 0.12,
-    y: intersection[1] * 0.12,
+    x: calculateTranslationAmount(intersection[0], 0.12, 10, distancePercent),
+    y: calculateTranslationAmount(intersection[1], 0.12, 10, distancePercent),
   });
 }
 
 function calculateDistance(x1, x2, y1, y2) {
   return Math.sqrt(Math.abs(x1 - x2 + (y1 - y2)));
+}
+
+function percentageOfMaxDistance(distance) {
+  return distance / maxDistance;
 }
 
 function calculateSlope(x1, x2, y1, y2) {
@@ -135,10 +163,13 @@ container.addEventListener("mousemove", (e) => {
   );
   const slope = calculateSlope(relPos[0], 0, relPos[1], 0);
   const quadrant = determineQuadrant(relPos[0], relPos[1]);
-
+  const distancePercent = percentageOfMaxDistance(
+    calculateDistance(relPos[0], 0, relPos[1], 0)
+  );
   const intersection = getIntersection(bRect.width / 2, slope, quadrant);
 
-  mouseMoveAnimations(intersection);
+  console.log(distancePercent);
+  mouseMoveAnimations(intersection, distancePercent);
 });
 
 container.addEventListener("mouseleave", (e) => {
