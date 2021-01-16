@@ -1,18 +1,20 @@
 svg {
-    height: 25vw;
-    width: 25vw;
+  height: 25vw;
+  width: 25vw;
 }
 
 div {
-    height: 95vh;
-    width:95vw;
-    margin-left: 2vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid black;
+  height: 95vh;
+  width: 95vw;
+  margin-left: 2vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid black;
 }
 
-
+#eye-shadow {
+  opacity: 0.4;
+}
 
 /*# sourceMappingURL=/animated-svg-eye-with-gsap.9ad09f98.css.map */
